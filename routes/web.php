@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MyController;
+use App\Http\Controllers\PostController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -39,10 +40,10 @@ Route::get('books/{judul}', function ($a) {
     return 'Judul Buku : ' . $a;
 });
 
-Route::get('post/{title}/{category}', function ($a, $b) {
-    //compact assosiatif
-    return view('post', ['judul' => $a, 'cat' => $b]);
-});
+// Route::get('post/{title}/{category}', function ($a, $b) {
+//     //compact assosiatif
+//     return view('post', ['judul' => $a, 'cat' => $b]);
+// });
 
 //route opsional Parameter
 //di tandai dengan ?
@@ -147,11 +148,17 @@ Route::get('search/{cari}', function ($query) {
 Route::get('greetings', [MyController::class, 'hello']);
 Route::get('student', [MyController::class, 'siswa']);
 
-use App\Http\Controllers\PostController;
+Auth::routes();
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //post
-Route::get('post', [PostController::class, 'index']);
+Route::get('post', [PostController::class, 'index'])->name('post.index');
+// tambah data post
+Route::get('post/create', [PostController::class, 'create'])->name('post.create');
+Route::post('post', [PostController::class, 'store'])->name('post.store');
+// edit data post
+Route::get('post/{id}/edit', [PostController::class, 'edit'])->name('post.edit');
+Route::put('post/{id}', [PostController::class, 'update'])->name('post.update');
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// hapus data
+Route::delete('post/{id}', [PostController::class, 'destroy'])->name('post.delete');

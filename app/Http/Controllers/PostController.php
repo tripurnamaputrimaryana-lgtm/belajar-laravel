@@ -35,8 +35,16 @@ class PostController extends Controller
         $post = new Post;
         $post->title = $request->title;
         $post->content = $request->content;
-        $post->save();
+        $post->save(); // disimpan ke db
         return redirect()->route('post.index');
+    }
+
+    // menampilkan data berdasarkan parameter id
+    public function show($id)
+    {
+        // mencari data post berdasarkan parameter 'id'
+        $post = Post::findOrFail($id);
+        return view('post.show', compact('post')); 
     }
     
     //menampilkan formulir edit data post

@@ -23,7 +23,7 @@ class HobiSeeder extends Seeder
         foreach ($mahasiswas as $mhs) {
             $randomHobi = [$hobi1->id, $hobi2->id, $hobi3->id, $hobi4->id];
             shuffle($randomHobi);
-            $mhs->hobis()->attach(array_slice($randomHobi, 0, rand(1, 3)));
+            $mhs->hobi()->attach(array_slice($randomHobi, 0, rand(1, 3)));
         }
     }
 }

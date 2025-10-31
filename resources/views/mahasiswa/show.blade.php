@@ -1,36 +1,43 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    Detail Mahasiswa
-                    <a href="{{ route('mahasiswa.index') }}" class="btn btn-sm btn-outline-secondary float-end">Kembali</a>
+                    <div class="float-start">
+                        {{ __('Mahasiswa') }}
+                    </div>
+                    <div class="float-end">
+                        <a href="{{ route('mahasiswa.create') }}" class="btn btn-sm btn-outline-primary">Tambah Data</a>
+                    </div>
                 </div>
 
                 <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th>Nama Mahasiswa</th>
-                            <td>{{ $mahasiswa->nama }}</td>
-                        </tr>
-                        <tr>
-                            <th>No Induk Mahasiswa</th>
-                            <td>{{ $mahasiswa->nim }}</td>
-                        </tr>
-                        <tr>
-                            <th>Nama Dosen</th>
-                            <td>{{ $mahasiswa->dosen->nama ?? '-' }}</td>
-                        </tr>
-                        @if($mahasiswa->wali)
-                        <tr>
-                            <th>Nama Wali</th>
-                            <td>{{ $mahasiswa->wali->nama }}</td>
-                        </tr>
-                        @endif
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>Nama Mahasiswa</th>
+                                <td>{{$mahasiswa->nama}}</td>
+                            </tr>
+                            <tr>
+                                <th>Dosen Pengampu</th>
+                                <td>{{$mahasiswa->dosen->nama}}</td>
+                            </tr>
+                            <tr>
+                                <th>Nama Wali</th>
+                                <td>{{$mahasiswa->wali->nama ?? '-'}}</td>
+                            </tr>
+                            <tr>
+                                <th>Daftar Hobi </th>
+                                <td>
+                                    @foreach ($mahasiswa->hobis as $hobi)
+                                    <li>{{$hobi->nama_hobi}}</li>
+                                    @endforeach
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

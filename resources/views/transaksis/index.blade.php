@@ -7,10 +7,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="float-start">
-                        {{ __('Mahasiswa') }}
+                        {{ __('Transaksi') }}
                     </div>
                     <div class="float-end">
-                        <a href="{{ route('mahasiswa.create') }}" class="btn btn-sm btn-outline-primary">Tambah Data</a>
+                        <a href="{{ route('transaksis.create') }}" class="btn btn-sm btn-outline-primary">Tambah Data</a>
                     </div>
                 </div>
 
@@ -20,39 +20,38 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Mahasiswa</th>
-                                    <th>No Induk Mahasiswa</th>
-                                    <th>Nama Dosen</th>
+                                    <th>Kode Transaksi</th>
+                                    <th>Tanggal</th>
+                                    <th>Nama Pelanggan</th>
+                                    <th>Total Harga</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @php $no = 1; @endphp
-                                @forelse ($mahasiswas as $data)
+                                @forelse ($transaksis as $data)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td>{{ $data->nama }}</td>
-                                    <td>{{ $data->nim }}</td>
-                                    <td>{{ $data->dosen->nama}}</td>
+                                    <td>{{ $data->kode_transaksi }}</td>
+                                    <td>{{ $data->tanggal }}</td>
+                                    <td>{{ $data->pelanggan->nama ?? '-' }}</td>
+                                    <td>Rp{{ number_format($data->total_harga, 2, ',', '.') }}</td>
                                     <td>
-                                        <form action="{{ route('mahasiswa.destroy', $data->id) }}" method="POST">
+                                        <form action="{{ route('transaksis.destroy', $data->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <a href="{{ route('mahasiswa.show', $data->id) }}"
-                                                class="btn btn-sm btn-outline-dark">Show</a> |
-                                            <a href="{{ route('mahasiswa.edit', $data->id) }}"
-                                                class="btn btn-sm btn-outline-success">Edit</a> |
-                                            <button type="submit" onsubmit="return confirm('Are You Sure ?');"
-                                                class="btn btn-sm btn-outline-danger">Delete</button>
+                                            <a href="{{ route('transaksis.show', $data->id) }}" class="btn btn-sm btn-outline-dark">Show</a> |
+                                            <a href="{{ route('transaksis.edit', $data->id) }}" class="btn btn-sm btn-outline-success">Edit</a> |
+                                            <button type="submit" onclick="return confirm('Yakin ingin hapus?');" class="btn btn-sm btn-outline-danger">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
                                     <td colspan="6" class="text-center">
-                                        Data data belum Tersedia.
+                                        Data belum tersedia
                                     </td>
-                                </tr>
+                                </tr>  
                                 @endforelse
                             </tbody>
                         </table>

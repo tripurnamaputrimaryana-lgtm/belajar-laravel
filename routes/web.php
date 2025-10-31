@@ -6,9 +6,15 @@ use App\Http\Controllers\BiodataController;
 use App\Http\Controllers\RelasiController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\HobiController;
+use App\Http\Controllers\ProdukStokController;
+use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\DetailTransaksiController;
+use App\Http\Controllers\PembayaranController;
+
 use App\Models\Wali;
 use App\Models\Mahasiswa;
 use App\Models\Hobi;
+use App\Models\ProdukStok;
 
 
 Route::get('/', function () {
@@ -213,3 +219,12 @@ Route::resource('hobi', HobiController::class);
 Route::resource('mahasiswa', App\Http\Controllers\MahasiswaController::class);
 
 Route::resource('wali', App\Http\Controllers\WaliController::class);
+
+Route::resource('transaksi', App\Http\Controllers\TransaksiController::class);
+Route::resource('pelanggan', App\Http\Controllers\PelangganController::class);
+Route::resource('produk-stok', ProdukStokController::class)->parameters([
+    'produk-stok' => 'produk',
+]);
+Route::resource('transaksis', TransaksiController::class);
+Route::resource('detail-transaksis', DetailTransaksiController::class);
+Route::resource('pembayarans', PembayaranController::class);

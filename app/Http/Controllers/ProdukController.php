@@ -97,5 +97,5 @@ class ProdukController extends Controller
         return redirect()->route('produk.index');
 
     }
+
 }
- 

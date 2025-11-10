@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Pelanggan;
@@ -7,10 +6,11 @@ use Illuminate\Http\Request;
 
 class PelangganController extends Controller
 {
+
     public function index()
     {
-        $pelanggans = Pelanggan::all();
-        return view('pelanggan.index', compact('pelanggans'));
+        $pelanggan = Pelanggan::all();
+        return view('pelanggan.index', compact('pelanggan'));
     }
 
     public function create()
@@ -18,43 +18,65 @@ class PelangganController extends Controller
         return view('pelanggan.create');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama'   => 'required|string|max:100',
-            'alamat' => 'required',
-            'no_hp'  => 'required|string|max:20',
+        $validated = $request->validate([
+            'nama'       => 'required',
+            'alamat'     => 'required',
+            'no_telepon' => 'required',
         ]);
 
-        Pelanggan::create($request->all());
-        return redirect()->route('pelanggan.index')->with('success', 'Data berhasil disimpan');
+        $pelanggan             = new Pelanggan();
+        $pelanggan->nama       = $request->nama;
+        $pelanggan->alamat     = $request->alamat;
+        $pelanggan->no_telepon = $request->no_telepon;
+        $pelanggan->save();
+
+        return redirect()->route('pelanggan.index');
     }
 
-    public function show(Pelanggan $pelanggan)
+    public function show(string $id)
     {
+        $pelanggan = Pelanggan::findOrFail($id);
         return view('pelanggan.show', compact('pelanggan'));
     }
 
-    public function edit(Pelanggan $pelanggan)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        return view('pelanggan.edit', compact('pelanggan'));
+        $pelanggan = Pelanggan::findOrFail($id);
+        return view('latihan.pelanggan.edit', compact('pelanggan'));
     }
 
-    public function update(Request $request, Pelanggan $pelanggan)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $request->validate([
-            'nama'   => 'required|string|max:100',
-            'alamat' => 'required',
-            'no_hp'  => 'required|string|max:20',
+        $validated = $request->validate([
+            'nama'       => 'required',
+            'alamat'     => 'required',
+            'no_telepon' => 'required',
         ]);
 
-        $pelanggan->update($request->all());
-        return redirect()->route('pelanggan.index')->with('success', 'Data berhasil diupdate');
+        $pelanggan             = Pelanggan::findOrFail($id);
+        $pelanggan->nama       = $request->nama;
+        $pelanggan->alamat     = $request->alamat;
+        $pelanggan->no_telepon = $request->no_telepon;
+        $pelanggan->save();
+
+        return redirect()->route('pelanggan.index');
     }
 
-    public function destroy(Pelanggan $pelanggan)
+    public function destroy(string $id)
     {
+        $pelanggan = Pelanggan::findOrFail($id);
         $pelanggan->delete();
-        return redirect()->route('pelanggan.index')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('pelanggan.index');
     }
 }

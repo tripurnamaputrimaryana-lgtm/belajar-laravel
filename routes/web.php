@@ -222,9 +222,5 @@ Route::resource('wali', App\Http\Controllers\WaliController::class);
 
 Route::resource('transaksi', App\Http\Controllers\TransaksiController::class);
 Route::resource('pelanggan', App\Http\Controllers\PelangganController::class);
-Route::resource('produk-stok', ProdukStokController::class)->parameters([
-    'produk-stok' => 'produk',
-]);
 Route::resource('transaksis', TransaksiController::class);
-Route::resource('detail-transaksis', DetailTransaksiController::class);
-Route::resource('pembayarans', PembayaranController::class);
+Route::resource('pembayaran', PembayaranController::class);

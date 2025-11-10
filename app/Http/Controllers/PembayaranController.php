@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Pembayaran;
@@ -8,74 +7,108 @@ use Illuminate\Http\Request;
 
 class PembayaranController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pembayarans = Pembayaran::with('transaksi')->get();
-        return view('pembayarans.index', compact('pembayarans'));
+        $search = $request->get('search');
+
+        $pembayarans = Pembayaran::with('transaksi')
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('transaksi', function ($q) use ($search) {
+                    $q->where('kode', 'like', "%$search%");
+                });
+            })
+            ->latest()
+            ->paginate(10);
+
+        return view('pembayaran.index', compact('pembayarans', 'search'));
     }
 
+    // ✅ CARI TRANSAKSI SEBELUM BAYAR
+    public function searchTransaksi(Request $request)
+    {
+        $kode      = $request->get('kode');
+        $transaksi = Transaksi::where('kode_transaksi', $kode)->first();
+
+        if (! $transaksi) {
+            return response()->json(['error' => 'Transaksi tidak ditemukan.'], 404);
+        }
+
+        return response()->json($transaksi);
+    }
+
+    // ✅ CREATE
     public function create()
     {
-        $transaksis = Transaksi::all();
-        return view('pembayarans.create', compact('transaksis'));
+        return view('pembayaran.create');
     }
 
+    // ✅ STORE
     public function store(Request $request)
     {
         $request->validate([
-            'transaksi_id' => 'required|exists:transaksis,id',
-            'metode'       => 'required|string|max:50',
-            'jumlah_bayar' => 'required|numeric|min:0',
+            'transaksi_id'      => 'required|exists:transaksis,id',
+            'tanggal_bayar'     => 'required|date',
+            'metode_pembayaran' => 'required|in:cash,credit,debit',
+            'jumlah_bayar'      => 'required|integer|min:0',
         ]);
 
         $transaksi = Transaksi::findOrFail($request->transaksi_id);
         $kembalian = $request->jumlah_bayar - $transaksi->total_harga;
 
         Pembayaran::create([
-            'transaksi_id' => $request->transaksi_id,
-            'metode'       => $request->metode,
-            'jumlah_bayar' => $request->jumlah_bayar,
-            'kembalian'    => $kembalian,
+            'transaksi_id'      => $transaksi->id,
+            'tanggal_bayar'     => $request->tanggal_bayar,
+            'metode_pembayaran' => $request->metode_pembayaran,
+            'jumlah_bayar'      => $request->jumlah_bayar,
+            'kembalian'         => max($kembalian, 0),
         ]);
 
-        return redirect()->route('pembayarans.index');
+        return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil disimpan!');
     }
 
-    public function show(Pembayaran $pembayaran)
+    // ✅ SHOW
+    public function show($id)
     {
-        return view('pembayarans.show', compact('pembayaran'));
+        $pembayaran = Pembayaran::with('transaksi.pelanggan')->findOrFail($id);
+        return view('pembayaran.show', compact('pembayaran'));
     }
 
-    public function edit(Pembayaran $pembayaran)
+    // ✅ EDIT
+    public function edit($id)
     {
-        $transaksis = Transaksi::all();
-        return view('pembayarans.edit', compact('pembayaran', 'transaksis'));
+        $pembayaran = Pembayaran::findOrFail($id);
+        return view('pembayaran.edit', compact('pembayaran'));
     }
 
-    public function update(Request $request, Pembayaran $pembayaran)
+    // ✅ UPDATE
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'transaksi_id' => 'required|exists:transaksis,id',
-            'metode'       => 'required|string|max:50',
-            'jumlah_bayar' => 'required|numeric|min:0',
+            'tanggal_bayar'     => 'required|date',
+            'metode_pembayaran' => 'required|in:cash,credit,debit',
+            'jumlah_bayar'      => 'required|integer|min:0',
         ]);
 
-        $transaksi = Transaksi::findOrFail($request->transaksi_id);
-        $kembalian = $request->jumlah_bayar - $transaksi->total_harga;
+        $pembayaran = Pembayaran::findOrFail($id);
+        $transaksi  = $pembayaran->transaksi;
+        $kembalian  = $request->jumlah_bayar - $transaksi->total_harga;
 
         $pembayaran->update([
-            'transaksi_id' => $request->transaksi_id,
-            'metode'       => $request->metode,
-            'jumlah_bayar' => $request->jumlah_bayar,
-            'kembalian'    => $kembalian,
+            'tanggal_bayar'     => $request->tanggal_bayar,
+            'metode_pembayaran' => $request->metode_pembayaran,
+            'jumlah_bayar'      => $request->jumlah_bayar,
+            'kembalian'         => max($kembalian, 0),
         ]);
 
-        return redirect()->route('pembayarans.index');
+        return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil diperbarui!');
     }
 
-    public function destroy(Pembayaran $pembayaran)
+    // ✅ DESTROY
+    public function destroy($id)
     {
+        $pembayaran = Pembayaran::findOrFail($id);
         $pembayaran->delete();
-        return redirect()->route('pembayarans.index');
+
+        return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil dihapus!');
     }
 }

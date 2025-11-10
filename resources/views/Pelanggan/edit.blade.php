@@ -5,47 +5,53 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Edit Data Pelanggan</span>
-                    <div>
-                        <a href="{{ route('pelanggan.index') }}" class="btn btn-sm btn-outline-secondary me-2">Batal</a>
-                        <button type="submit" form="form-pelanggan" class="btn btn-sm btn-outline-success">Simpan</button>
+                <div class="card-header">
+                    <div class="float-start">
+                        Edit Pelanggan
+                    </div>
+                    <div class="float-end">
+                        <a href="{{ route('pelanggan.index') }}" class="btn btn-sm btn-outline-primary">Kembali</a>
                     </div>
                 </div>
 
                 <div class="card-body">
-                    <form id="form-pelanggan" action="{{ route('pelanggan.update', $pelanggan->id) }}" method="post">
+                    <form action="{{ route('pelanggan.update', $pelanggan->id) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @method('put')
                         @csrf
-                        @method('PUT')
-                        <table class="table table-borderless">
-                            <tr>
-                                <th>Nama</th>
-                                <td>
-                                    <input type="text" name="nama" value="{{ old('nama', $pelanggan->nama) }}" class="form-control @error('nama') is-invalid @enderror">
-                                    @error('nama')
-                                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                                    @enderror
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Alamat</th>
-                                <td>
-                                    <textarea name="alamat" class="form-control @error('alamat') is-invalid @enderror">{{ old('alamat', $pelanggan->alamat) }}</textarea>
-                                    @error('alamat')
-                                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                                    @enderror
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>No HP</th>
-                                <td>
-                                    <input type="text" name="no_hp" value="{{ old('no_hp', $pelanggan->no_hp) }}" class="form-control @error('no_hp') is-invalid @enderror">
-                                    @error('no_hp')
-                                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                                    @enderror
-                                </td>
-                            </tr>
-                        </table>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Pelanggan</label>
+                            <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
+                                value="{{ $pelanggan->nama }}" placeholder="produk Name" required>
+                            @error('nama')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">No Telepon</label>
+                            <input type="number" class="form-control @error('no_telepon') is-invalid @enderror"
+                                name="no_telepon" value="{{ $pelanggan->no_telepon }}" placeholder="No Telepon"
+                                required>
+                            @error('no_telepon')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">alamat</label>
+                            <textarea class="form-control @error('alamat') is-invalid @enderror" name="alamat" rows="3"
+                                placeholder="alamat" required>{{ $pelanggan->alamat }}</textarea>
+                            @error('alamat')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary">SIMPAN</button>
+                        <button type="reset" class="btn btn-sm btn-warning">RESET</button>
                     </form>
                 </div>
             </div>

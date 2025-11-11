@@ -6,10 +6,6 @@ use App\Http\Controllers\BiodataController;
 use App\Http\Controllers\RelasiController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\HobiController;
-use App\Http\Controllers\ProdukStokController;
-use App\Http\Controllers\TransaksiController;
-use App\Http\Controllers\DetailTransaksiController;
-use App\Http\Controllers\PembayaranController;
 
 use App\Models\Wali;
 use App\Models\Mahasiswa;
@@ -220,7 +216,8 @@ Route::resource('mahasiswa', App\Http\Controllers\MahasiswaController::class);
 
 Route::resource('wali', App\Http\Controllers\WaliController::class);
 
-Route::resource('transaksi', App\Http\Controllers\TransaksiController::class);
+ Route::get('/transaksi/search', [App\Http\Controllers\TransaksiController::class, 'search'])->name('transaksi.search');
 Route::resource('pelanggan', App\Http\Controllers\PelangganController::class);
-Route::resource('transaksis', TransaksiController::class);
-Route::resource('pembayaran', PembayaranController::class);
+Route::resource('produk', App\Http\Controllers\ProdukController::class);
+Route::resource('transaksi', App\Http\Controllers\TransaksiController::class);
+Route::resource('pembayaran', App\Http\Controllers\PembayaranController::class);
